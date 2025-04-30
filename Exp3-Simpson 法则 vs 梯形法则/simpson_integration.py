@@ -3,7 +3,7 @@ import numpy as np
 # 待积分函数（学生需自行定义）
 def f(x):
     # TODO: 实现被积函数 f(x) = x^4 - 2x + 1
-    pass
+    return x**4-2*x+1
 
 # 梯形法则积分函数（供参考比较用）
 def trapezoidal(f, a, b, N):
