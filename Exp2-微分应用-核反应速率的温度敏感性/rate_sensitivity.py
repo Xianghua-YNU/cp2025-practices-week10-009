@@ -1,37 +1,33 @@
 import numpy as np
 import matplotlib.pyplot as plt
-
 def q3a(T):
     """
     计算 3-alpha 反应速率中与温度相关的部分 q / (rho^2 Y^3)
-    输入: T - 温度 (K)
+    输入: T - 温度 (K)（支持标量或数组输入）
     返回: 速率因子 (erg * cm^6 / (g^3 * s))
     """
-    # TODO: 在此实现3-α反应速率计算
-    # 提示：
-    # 1. 将温度转换为以 10^8 K 为单位
-    # 2. 注意处理温度为零的特殊情况
-    # 3. 使用公式：q_{3α} = 5.09×10^11 ρ^2 Y^3 T_8^(-3) exp(-44.027/T_8)
-    T = np.asarray(T)  # 统一转换为数组处理
-    T8 = T / 1e8
+    T = np.asarray(T)
     
-    # 创建掩码标识有效温度（T != 0）
-    valid = (T != 0)
+    # 创建有效温度掩码（仅处理T > 0的物理温度）
+    valid = (T > 0)
     
-    # 初始化结果数组
-    factor = np.zeros_like(T)
+    # 初始化结果数组为0.0
+    factor = np.zeros_like(T, dtype=np.float64)
     
     # 只对有效温度进行计算
     with np.errstate(divide='ignore', invalid='ignore'):
-        T8_valid = T8[valid]
-        calc = 5.09e11 * (T8_valid**-3) * np.exp(-44.027 / T8_valid)
+        T8 = T[valid] / 1e8
+        calc = 5.09e11 * (T8**-3) * np.exp(-44.027 / T8)
         factor[valid] = calc
     
     # 处理可能的异常值
     factor = np.nan_to_num(factor, nan=0.0, posinf=0.0, neginf=0.0)
     
-    # 返回标量结果（如果输入是标量）
-    return factor.item() if np.isscalar(T) else factor 
+    # 确保所有非物理温度返回0.0
+    factor[~valid] = 0.0
+    
+    return factor.item() if np.isscalar(T) else factor
+
 def plot_rate(filename="rate_vs_temp.png"):
     """绘制速率因子随温度变化的 log-log 图"""
     # TODO: 在此实现绘图函数
