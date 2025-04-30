@@ -128,7 +128,7 @@ def create_comparison_plot(x, x_central, dy_central, dy_richardson, df_analytica
     richardson_errors = []
     expected = df_analytical(x_test)
 
-for h in h_values:
+    for h in h_values:
         # Central difference error
         central_result = (f(x_test + h) - f(x_test - h)) / (2 * h)
         central_errors.append(abs(central_result - expected))
@@ -147,6 +147,8 @@ for h in h_values:
     
     plt.tight_layout()
     plt.show()
+
+
 
 def main():
     """运行数值微分实验的主函数"""
