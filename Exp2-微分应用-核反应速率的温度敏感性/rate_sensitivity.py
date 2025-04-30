@@ -12,12 +12,26 @@ def q3a(T):
     # 1. 将温度转换为以 10^8 K 为单位
     # 2. 注意处理温度为零的特殊情况
     # 3. 使用公式：q_{3α} = 5.09×10^11 ρ^2 Y^3 T_8^(-3) exp(-44.027/T_8)
+    T = np.asarray(T)  # 统一转换为数组处理
     T8 = T / 1e8
+    
+    # 创建掩码标识有效温度（T != 0）
+    valid = (T != 0)
+    
+    # 初始化结果数组
+    factor = np.zeros_like(T)
+    
+    # 只对有效温度进行计算
     with np.errstate(divide='ignore', invalid='ignore'):
-        factor = 5.09e11 * (T8)**(-3) * np.exp(-44.027 / T8)
+        T8_valid = T8[valid]
+        calc = 5.09e11 * (T8_valid**-3) * np.exp(-44.027 / T8_valid)
+        factor[valid] = calc
+    
+    # 处理可能的异常值
     factor = np.nan_to_num(factor, nan=0.0, posinf=0.0, neginf=0.0)
-    return factor
-
+    
+    # 返回标量结果（如果输入是标量）
+    return factor.item() if np.isscalar(T) else factor 
 def plot_rate(filename="rate_vs_temp.png"):
     """绘制速率因子随温度变化的 log-log 图"""
     # TODO: 在此实现绘图函数
