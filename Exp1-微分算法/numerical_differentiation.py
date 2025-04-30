@@ -122,7 +122,7 @@ def create_comparison_plot(x, x_central, dy_central, dy_richardson, df_analytica
     ax3.grid(True)
     
     # 4. 步长敏感性分析图（双对数坐标） 
-   h_values = np.logspace(-6, -1, 20)
+    h_values = np.logspace(-6, -1, 20)
     x_test = 0.0
     central_errors = []
     richardson_errors = []
